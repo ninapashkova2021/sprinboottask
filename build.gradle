@@ -1,0 +1,61 @@
+plugins {
+	id 'org.springframework.boot' version '2.5.6'
+	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+	id 'java'
+}
+
+group = 'com.epam.pashkova'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	springVer = '2.5.6'
+	postgresqlVer = '42.3.0'
+	lombokVer = '1.18.22'
+	aspectjVer = '1.9.8.M1'
+	h2Ver = '1.4.200'
+	assertjVer = '3.21.0'
+}
+
+dependencies {
+	implementation "org.springframework.boot:spring-boot-starter-data-jpa:${springVer}"
+	implementation "org.springframework.boot:spring-boot-starter-web:${springVer}"
+	implementation group: 'org.postgresql', name: 'postgresql', version: postgresqlVer
+	implementation group: 'org.projectlombok', name: 'lombok', version: lombokVer
+	runtimeOnly group: 'org.aspectj', name: 'aspectjweaver', version: aspectjVer
+	runtimeOnly group: 'org.aspectj', name: 'aspectjrt', version: aspectjVer
+
+	testImplementation "org.springframework.boot:spring-boot-starter-test:${springVer}"
+	testImplementation group: 'com.h2database', name: 'h2', version: h2Ver
+	testImplementation group: 'org.assertj', name: 'assertj-core', version: assertjVer
+
+	annotationProcessor group: 'org.projectlombok', name: 'lombok', version: lombokVer
+}
+
+test {
+	useJUnitPlatform()
+	filter {
+		excludeTestsMatching "*IntegrationTests"
+	}
+	beforeTest { descriptor ->
+		logger.lifecycle("Running test: ${descriptor}")
+	}
+}
+
+task integrationTest(type: Test) {
+	description = 'Runs integration tests'
+	group = 'verification'
+
+	useJUnitPlatform()
+	filter {
+		includeTestsMatching "*IntegrationTests"
+	}
+	beforeTest { descriptor ->
+		logger.lifecycle("Running test: ${descriptor}")
+	}
+	shouldRunAfter(test)
+}
