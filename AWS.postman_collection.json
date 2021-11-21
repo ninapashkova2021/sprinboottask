@@ -1,0 +1,167 @@
+{
+	"info": {
+		"_postman_id": "5d650d15-99b4-4188-bfa9-e185ca9789a8",
+		"name": "AWS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "AWS_Get_Favourites_TVSeries",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "AWS_Add_Subscriber",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "subscriberName",
+						"value": "nina",
+						"type": "text"
+					},
+					{
+						"key": "password",
+						"value": "12345",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-3-21-102-144.us-east-2.compute.amazonaws.com/addSubscriber",
+					"protocol": "http",
+					"host": [
+						"ec2-3-21-102-144",
+						"us-east-2",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"addSubscriber"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AWS_Add_Favourite_TVSeries",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "tvSeriesTitle",
+						"value": "Supernatural",
+						"type": "text"
+					},
+					{
+						"key": "login",
+						"value": "boris",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-3-21-102-144.us-east-2.compute.amazonaws.com/addFavourite",
+					"protocol": "http",
+					"host": [
+						"ec2-3-21-102-144",
+						"us-east-2",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"addFavourite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AWS_Get_Subscribers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://ec2-3-21-102-144.us-east-2.compute.amazonaws.com/subscribers",
+					"protocol": "http",
+					"host": [
+						"ec2-3-21-102-144",
+						"us-east-2",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"subscribers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AWS_Remove_Favourite_TVSeries",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "tvSeriesTitle",
+						"value": "",
+						"type": "text"
+					},
+					{
+						"key": "login",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-3-21-102-144.us-east-2.compute.amazonaws.com/removeFavourite",
+					"protocol": "http",
+					"host": [
+						"ec2-3-21-102-144",
+						"us-east-2",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"removeFavourite"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AWS_Remove_Subscriber",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "subscriberName",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://ec2-3-21-102-144.us-east-2.compute.amazonaws.com/removeSubscriber",
+					"protocol": "http",
+					"host": [
+						"ec2-3-21-102-144",
+						"us-east-2",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"removeSubscriber"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

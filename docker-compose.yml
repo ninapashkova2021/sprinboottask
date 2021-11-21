@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  backend-api:
+    image: ninapashkova/episodate_listener:1.0.0
+    ports:
+      - "80:8080"
+    restart: always
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/episodatetvseries
+      SPRING_DATASOURCE_USERNAME: nina
+      SPRING_DATASOURCE_PASSWORD: nina
+    networks:
+      - backend
+
+  db:
+    image: postgres:bullseye
+    volumes:
+      - psql_data:/var/lib/postgresql/data
+    ports:
+      - "3306:5432"
+    restart: always
+    environment:
+      POSTGRES_DB: episodatetvseries
+      POSTGRES_USER: nina
+      POSTGRES_PASSWORD: nina
+    networks:
+      - backend
+
+networks:
+  backend:
+
+volumes:
+  psql_data:
