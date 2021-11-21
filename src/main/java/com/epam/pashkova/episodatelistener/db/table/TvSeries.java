@@ -36,7 +36,7 @@ public class TvSeries {
     private LocalDate nextEpisodeDate;
     private Double rating;
 
-    @ManyToMany(fetch=FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_tv_series",
             joinColumns = @JoinColumn(name = "tv_series_id"),
             inverseJoinColumns = @JoinColumn(name = "user_login"))

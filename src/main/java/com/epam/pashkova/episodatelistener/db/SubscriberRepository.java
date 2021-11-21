@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubscriberRepository extends JpaRepository<SubscriberUser, String> {
+public interface SubscriberRepository extends JpaRepository<SubscriberUser, Long> {
     SubscriberUser findByLogin(String login);
 }
