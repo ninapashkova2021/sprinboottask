@@ -1,4 +1,6 @@
-node('qa-node2') {
+node('builder') {
+    String dockerComposeFileUrl = 'https://raw.githubusercontent.com/ninapashkova2021/sprinboottask/master/docker-compose.yml'
+
     stage('Fetch code') {
         checkout([$class: 'GitSCM',
         branches: [[name: '*/master']],
@@ -20,8 +22,9 @@ node('qa-node2') {
 
     stage('Deploy') {
         node('qa-node') {
-            echo "It's deploy stage"
-            echo "It's deploy stage2"
+            sh "sudo curl -o ${dockerComposeFileUrl} --output docker-compose.yaml"
+            sh 'sudo docker-compose down'
+            sh 'sudo docker-compose up'
         }
     }
 }
