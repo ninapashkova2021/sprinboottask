@@ -20,8 +20,7 @@ node('qa-node2') {
 
     stage('Deploy') {
         node('qa-node') {
-            
+            echo "It's deploy stage"
         }
-
     }
 }
