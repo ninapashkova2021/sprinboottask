@@ -43,7 +43,7 @@ node('builder') {
         sh "sudo docker push ${episodateImageTag}"
     }
 
-    stage('Deploy') {
+    stage('Deploy QA env') {
         node('qa-node') {
             ansiColor('xterm') {
                 sh "sudo rm -f docker-compose.*"
