@@ -39,11 +39,13 @@ node('builder') {
 
     stage('Deploy') {
         node('qa-node') {
-            sh "sudo rm -f docker-compose.*"
-            sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
-            sh 'sudo docker-compose down'
-            sh "sudo export EPISODATE_APP_VERSION=${episodateAppVersion}"
-            sh 'sudo docker-compose up'
+            ansiColor('xterm') {
+                echo "\e[31mEpisodate Listener will be online until finish of current job\e[0m"
+                sh "sudo rm -f docker-compose.*"
+                sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
+                sh 'sudo docker-compose down'
+                sh "sudo EPISODATE_APP_VERSION=${episodateAppVersion} docker-compose up"
+            }
         }
     }
 }
