@@ -40,7 +40,7 @@ node('builder') {
     stage('Deploy') {
         node('qa-node') {
             ansiColor('xterm') {
-                echo "\e[31mEpisodate Listener will be online until finish of current job\e[0m"
+                echo "\\e[31mEpisodate Listener will be online until finish of current job\\e[0m"
                 sh "sudo rm -f docker-compose.*"
                 sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
                 sh 'sudo docker-compose down'
