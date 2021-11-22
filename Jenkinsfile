@@ -16,11 +16,11 @@ node('builder') {
     }
 
     stage('Run unit tests') {
-        sh './gradlew test --no-daemon'
+        //sh './gradlew test --no-daemon'
     }
 
     stage('Run integration tests') {
-        sh './gradlew integrationTest --no-daemon'
+        //sh './gradlew integrationTest --no-daemon'
     }
 
     stage('Push to Docker Hub') {
