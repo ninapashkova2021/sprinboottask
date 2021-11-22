@@ -1,5 +1,10 @@
+properties([
+    parameters([string(defaultValue: 'master', name: 'BRANCH', trim: true)]),
+    pipelineTriggers([githubPush()])
+])
+
 node('builder') {
-    String buildBranch = "episodate_jenkins_ci"
+    String buildBranch = "master"
     String dockerComposeFileUrl = "https://raw.githubusercontent.com/ninapashkova2021/sprinboottask/${buildBranch}/docker-compose.yml"
     String episodateAppVersion = "1.${currentBuild.number}"
 
