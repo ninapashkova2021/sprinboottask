@@ -45,13 +45,11 @@ node('builder') {
 
     stage('Deploy QA env') {
         node('qa-node') {
-            ansiColor('xterm') {
-                sh "sudo rm -f docker-compose.*"
-                sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
-                sh 'sudo docker-compose down'
-                withEnv(['JENKINS_NODE_COOKIE=dontkill']) {
-                    sh "sudo EPISODATE_APP_VERSION=${episodateAppVersion} nohup docker-compose up &"
-                }
+            sh "sudo rm -f docker-compose.*"
+            sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
+            sh 'sudo docker-compose down'
+            withEnv(['JENKINS_NODE_COOKIE=dontkill']) {
+                sh "sudo EPISODATE_APP_VERSION=${episodateAppVersion} nohup docker-compose up &"
             }
         }
     }
