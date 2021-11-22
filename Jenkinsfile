@@ -49,7 +49,7 @@ node('builder') {
                 sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
                 sh 'sudo docker-compose down'
                 withEnv(['JENKINS_NODE_COOKIE=dontkill']) {
-                    sh "sudo nohup EPISODATE_APP_VERSION=${episodateAppVersion} docker-compose up &"
+                    sh "sudo EPISODATE_APP_VERSION=${episodateAppVersion} nohup docker-compose up &"
                 }
             }
         }
