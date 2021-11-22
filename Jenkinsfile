@@ -1,10 +1,11 @@
 node('builder') {
-    String dockerComposeFileUrl = 'https://raw.githubusercontent.com/ninapashkova2021/sprinboottask/master/docker-compose.yml'
+    String buildBranch = "episodate_jenkins_ci"
+    String dockerComposeFileUrl = "https://raw.githubusercontent.com/ninapashkova2021/sprinboottask/${buildBranch}/docker-compose.yml"
     String episodateAppVersion = "1.${currentBuild.number}"
 
     stage('Fetch code') {
         checkout([$class: 'GitSCM',
-        branches: [[name: '*/episodate_jenkins_ci']],
+        branches: [[name: "*/${buildBranch}"]],
         extensions: [],
         userRemoteConfigs: [[url: 'https://github.com/ninapashkova2021/sprinboottask.git']]])
     }
