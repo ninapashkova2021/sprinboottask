@@ -4,7 +4,7 @@ node('builder') {
 
     stage('Fetch code') {
         checkout([$class: 'GitSCM',
-        branches: [[name: '*/master']],
+        branches: [[name: '*/episodate_jenkins_ci']],
         extensions: [],
         userRemoteConfigs: [[url: 'https://github.com/ninapashkova2021/sprinboottask.git']]])
     }
