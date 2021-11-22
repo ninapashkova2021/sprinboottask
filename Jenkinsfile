@@ -22,10 +22,12 @@ node('builder') {
     }
 
     stage('Run unit tests') {
+        // Causes OOM
         //sh './gradlew test --no-daemon'
     }
 
     stage('Run integration tests') {
+        // Causes OOM
         //sh './gradlew integrationTest --no-daemon'
     }
 
@@ -44,7 +46,6 @@ node('builder') {
     stage('Deploy') {
         node('qa-node') {
             ansiColor('xterm') {
-                echo '\033[31mEpisodate Listener will be online until finish of current job\033[0m'
                 sh "sudo rm -f docker-compose.*"
                 sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yml"
                 sh 'sudo docker-compose down'
