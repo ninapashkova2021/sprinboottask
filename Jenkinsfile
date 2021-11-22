@@ -12,6 +12,7 @@ node('builder') {
     stage('Build') {
         println "Current app version is ${episodateAppVersion}"
         sh "chmod +x gradlew"
+        sh "./gradlew clean"
         sh "./gradlew build testClasses -x test -PappVersion=${episodateAppVersion} --no-daemon --stacktrace"
     }
 
