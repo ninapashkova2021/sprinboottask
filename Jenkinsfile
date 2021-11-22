@@ -27,6 +27,7 @@ node('builder') {
 
     stage('Push to Docker Hub') {
         String episodateImageTag = "ninapashkova/episodate_listener:${episodateAppVersion}"
+        sh "sudo service docker start"
         sh "sudo docker build -t ${episodateImageTag} --build-arg EPISODATE_APP_VERSION=${episodateAppVersion} ."
         withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials',
                                             passwordVariable: 'dockerHubPassword',
