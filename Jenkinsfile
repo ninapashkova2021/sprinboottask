@@ -41,7 +41,7 @@ node('builder') {
         node('qa-node') {
             sh "sudo curl ${dockerComposeFileUrl} --output docker-compose.yaml"
             sh 'sudo docker-compose down'
-            sh "export EPISODATE_APP_VERSION=${episodateVersion}"
+            sh "export EPISODATE_APP_VERSION=${episodateAppVersion}"
             sh 'sudo docker-compose up'
         }
     }
