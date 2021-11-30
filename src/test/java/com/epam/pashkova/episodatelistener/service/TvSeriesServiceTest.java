@@ -1,5 +1,6 @@
 package com.epam.pashkova.episodatelistener.service;
 
+import com.amazonaws.services.s3.model.PutObjectResult;
 import com.epam.pashkova.episodatelistener.db.SubscriberRepository;
 import com.epam.pashkova.episodatelistener.db.TvSeriesRepository;
 import com.epam.pashkova.episodatelistener.db.table.SubscriberUser;
@@ -7,13 +8,16 @@ import com.epam.pashkova.episodatelistener.db.table.TvSeries;
 import com.epam.pashkova.episodatelistener.episodate_entity.BasicSearchResult;
 import com.epam.pashkova.episodatelistener.episodate_entity.TvShow;
 import com.epam.pashkova.episodatelistener.exception.EpisodateRetrievingException;
+import com.epam.pashkova.episodatelistener.exception.S3EmptyReportContent;
 import com.epam.pashkova.episodatelistener.exception.SubscriberNotFoundException;
 import com.epam.pashkova.episodatelistener.exception.TvSeriesNotInFavouriteListException;
+import org.apache.commons.io.IOUtils;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.ThrowableAssert;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 import org.mockito.BDDMockito;
 import org.mockito.InjectMocks;
@@ -24,7 +28,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.HashSet;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -37,6 +47,9 @@ class TvSeriesServiceTest {
 
     @Mock
     private SubscriberRepository subscriberRepository;
+
+    @Mock
+    private EpisodateS3Service episodateS3Service;
 
     @Mock
     private RestTemplate restTemplate;
@@ -148,7 +161,7 @@ class TvSeriesServiceTest {
         BDDMockito.given(restTemplate.getForEntity(ArgumentMatchers.any(),
                         ArgumentMatchers.eq(BasicSearchResult.class), ArgumentMatchers.eq(title)))
                 .willReturn(new ResponseEntity<>(basicSearchResult, HttpStatus.SERVICE_UNAVAILABLE));
-        ThrowableAssert.ThrowingCallable throwingCallable = () -> tvSeriesService.getIdOfTvSeriesFromEpisodate(title);;
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> tvSeriesService.getIdOfTvSeriesFromEpisodate(title);
 
         // then
         assertThatThrownBy(throwingCallable)
@@ -286,5 +299,51 @@ class TvSeriesServiceTest {
                 .as("It should cause exception")
                 .isInstanceOf(TvSeriesNotInFavouriteListException.class);
         Mockito.verify(tvSeriesRepository, Mockito.never()).save(tvSeries);
+    }
+
+
+    @Test
+    void verifyThatReportContentWasObtained() {
+        // when
+        tvSeriesService.getReportContent();
+
+        // then
+        Mockito.verify(episodateS3Service).getFileFromBucket(ArgumentMatchers.any(), ArgumentMatchers.any());
+    }
+
+    @Test
+    void verifyThatReportWasGenerated() {
+        // given
+        String title = "Stranger Things";
+        TvSeries tvSeries = new TvSeries();
+        tvSeries.setTitle(title);
+        tvSeries.setYear("2016");
+        tvSeries.setSeasonsCount(4);
+        tvSeries.setRating(9.3358);
+
+        // when
+        BDDMockito.given(tvSeriesRepository.findAll()).willReturn(Collections.singletonList(tvSeries));
+        PutObjectResult putObjectResult = new PutObjectResult();
+        putObjectResult.setETag("TestTag");
+        putObjectResult.setContentMd5("TestMD5");
+        BDDMockito.given(episodateS3Service.putFileToBucket(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any()))
+                .willReturn(putObjectResult);
+
+        tvSeriesService.generateReportOnS3();
+
+        // then
+        Mockito.verify(episodateS3Service).putFileToBucket(ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.any());
+    }
+
+    @Test
+    void verifyThatReportWasNotGenerated() {
+        // when
+        BDDMockito.given(tvSeriesRepository.findAll()).willReturn(Collections.emptyList());
+        ThrowableAssert.ThrowingCallable throwingCallable = () -> tvSeriesService.generateReportOnS3();
+
+        // then
+        assertThatThrownBy(throwingCallable)
+                .as("It should cause exception")
+                .isInstanceOf(S3EmptyReportContent.class);
     }
 }
